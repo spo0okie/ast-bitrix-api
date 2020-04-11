@@ -1,0 +1,15 @@
+<?php
+define('APP_ID', 'application id');										// take it from Bitrix24 after adding a new application
+define('APP_SECRET_CODE', 'some secret code here');						// take it from Bitrix24 after adding a new application
+define('APP_REG_URL', 'http://ast-bitix.somesite.com:8081/index.php');	// the same URL you should set when adding a new application in Bitrix24
+$portal='ast-bitrix.bitrix24.ru';
+
+$auth_ini="/var/tmp/${portal}.auth.ini";
+
+$RESTmethod='telephony.externalcall.register';
+$RESTparams=[
+	'USER_PHONE_INNER'=>'101',
+	'USER_ID'=>29,
+	'PHONE_NUMBER'=>'89876543210',
+	'TYPE'=>2,
+];
