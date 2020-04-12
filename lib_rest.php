@@ -31,11 +31,22 @@ function executeHTTPRequest ($queryUrl, array $params = array()) {
     return $result;
 }
 
+/**
+ * Урл для интерактивной автризации и обновления ключей
+ * @param $domain
+ * @return string
+ */
 function requestCodeUrl ($domain) {
     return 'https://' . $domain . '/oauth/authorize/' .
         '?client_id=' . urlencode(APP_ID);
 }
 
+/**
+ * Запрос ACCESS токенв
+ * @param $code
+ * @param $server_domain
+ * @return array|mixed
+ */
 function requestAccessToken ($code, $server_domain) {
     $url = 'https://' . $server_domain . '/oauth/token/?' .
         'grant_type=authorization_code'.
@@ -45,6 +56,12 @@ function requestAccessToken ($code, $server_domain) {
     return executeHTTPRequest($url);
 }
 
+/**
+ * Обновление ACCESS токена при помощи REFRESH токена
+ * @param $refresh_token
+ * @param $server_domain
+ * @return array|mixed
+ */
 function refreshAccessToken ($refresh_token, $server_domain) {
     $url = 'https://' . $server_domain . '/oauth/token/?' .
         'grant_type=refresh_token'.
@@ -54,6 +71,14 @@ function refreshAccessToken ($refresh_token, $server_domain) {
     return executeHTTPRequest($url);
 }
 
+/**
+ * Выполнить REST запрос
+ * @param $rest_url	string 		URL интерфейса
+ * @param $method string		метод
+ * @param $params array			параметры
+ * @param $access_token string	токен доступа
+ * @return array|mixed
+ */
 function executeREST ($rest_url, $method, $params, $access_token) {
     $url = $rest_url.$method.'.json';
     return executeHTTPRequest($url, array_merge($params, array("auth" => $access_token)));
@@ -116,9 +141,9 @@ function fetchResponseToken($token, $response) {
 /**
  * Ищет в ответе сервера токены (и access и refresh)
  * возвращает секцию для ini
- * @param $token string имя токена/секции (access или refresh)
+ * @param $tokens[] string имя токена/секции (access или refresh)
  * @param $response array ответ сервера для поиска токенов в нем
- * @return array|null вовзращает или массив-секцию или null
+ * @return array вовзращает или массив-секцию или null
  */
 function fetchResponseTokens(&$tokens,$response) {
 	global $auth_ini;
@@ -148,7 +173,7 @@ function getTokenAge($section) {
 }
 
 /**
- *
+ * возвращает токены из ИНИ или актуальные черещ рефреш
  */
 function checkRestAuth() {
 	$tokens = loadAuthTokens();
@@ -162,10 +187,6 @@ function checkRestAuth() {
 	//  - или он тоже протух
 
 	if (getTokenAge($tokens['refresh'])<86400*28) {
-
-		//echo "Gettin auth token from refresh:<pre>";
-		//print_r($_REQUEST);
-		//echo "</pre><br/>";
 
 		$response=refreshAccessToken($tokens['refresh']['token'],'oauth.bitrix.info');
 		fetchResponseTokens($tokens,$response);
