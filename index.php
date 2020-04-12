@@ -33,9 +33,10 @@
 					fetchResponseTokens($tokens,$response);
 				}
 				executeREST(
-					$arAccessParams['client_endpoint'], 
-					'user.current', array(),
-					$arAccessParams['access_token']
+					$portal,
+					$RESTmethod,
+					$RESTparams,
+					$tokens['access']
 				);
 			?>
 		</pre>
