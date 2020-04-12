@@ -113,6 +113,13 @@ function fetchResponseToken($token, $response) {
 	return null;
 }
 
+/**
+ * Ищет в ответе сервера токены (и access и refresh)
+ * возвращает секцию для ini
+ * @param $token string имя токена/секции (access или refresh)
+ * @param $response array ответ сервера для поиска токенов в нем
+ * @return array|null вовзращает или массив-секцию или null
+ */
 function fetchResponseTokens(&$tokens,$response) {
 	global $auth_ini;
 
@@ -127,7 +134,6 @@ function fetchResponseTokens(&$tokens,$response) {
 	}
 
 	if ($is_updated) save_ini_file($tokens,$auth_ini);
-	//var_dump($tokens);
 	return $tokens;
 }
 
@@ -141,6 +147,9 @@ function getTokenAge($section) {
 	return time()-$section['date'];
 }
 
+/**
+ *
+ */
 function checkRestAuth() {
 	$tokens = loadAuthTokens();
 	//для начала нам надо понять не протух ли наш имеющийся токен авторизации
